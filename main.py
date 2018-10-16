@@ -23,12 +23,12 @@ def run(model1, model2):
     #HYPERPARAMETERS
     hidden_size = 300
     dropout_p = 0.1
-    n_iters = 2000
+    n_iters = 75000
     print_every = 100
     teacher_forcing_ratio = 0
-    learning_rate = 0.0001
+    learning_rate = 0.01
     #Prepare Data
-    input_lang, output_lang, pairs = prepareData('code', 'comment')
+    input_lang, output_lang, pairs = prepareData('eng', 'fra')
 
 
     # Define Model
@@ -47,7 +47,7 @@ def run(model1, model2):
         learning_rate=learning_rate,
         teacher_forcing_ratio=teacher_forcing_ratio)
 
-    PATH = '/Users/praveensanap/dev/nlp/codecomments/codecomments-src/nmt/model/code-comments.pt'
+    PATH = 'nmt/model/code-comments.pt'
 
     # Save Model, Parameters
     torch.save(

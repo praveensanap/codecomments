@@ -6,7 +6,7 @@ from nmt.evaluate import evaluate, evaluateRandomly
 hidden_size = 300
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
-PATH = '/Users/praveensanap/dev/nlp/codecomments/codecomments-src/nmt/model/code-comments.pt'
+PATH = '/nmt/model/code-comments.pt'
 
 checkpoint = torch.load(PATH)
 

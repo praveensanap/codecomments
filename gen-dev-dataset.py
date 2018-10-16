@@ -4,8 +4,8 @@ import time
 import os
 import random
 
-DATA_PATH = '/Users/praveensanap/dev/nlp/codecomments/codecomments-data/java_projects/'
-file = '/Users/praveensanap/dev/nlp/codecomments/codecomments-data/java_projects/guava-libraries/guava/'
+DATA_PATH = 'codecomments-data/java_projects/'
+file = 'codecomments-data/java_projects/guava-libraries/guava/'
 pairsFile = './nmt/data/code-comment.txt'
 corpusFile = './nmt/data/corpus.txt'
 metadata = './nmt/data/metadata'

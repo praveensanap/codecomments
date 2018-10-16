@@ -2,7 +2,7 @@ import torch
 
 from nmt.data import prepareData
 
-PATH = '/Users/praveensanap/dev/nlp/codecomments/codecomments-src/nmt/model/code-comments.pt'
+PATH = 'nmt/model/code-comments.pt'
 
 checkpoint = torch.load(PATH)
 

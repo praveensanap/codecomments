@@ -1,5 +1,5 @@
 import unicodedata
-import re
+import os
 import torch
 import fastText
 import numpy as np
@@ -7,9 +7,10 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 MAX_LENGTH = 10
 SOS_token = 0
 EOS_token = 1
-path = '/Users/praveensanap/dev/nlp/codecomments/codecomments-src/nmt/model/embeddings.bin'
 
-model = fastText.load_model(path)
+curr_dir = os.path.dirname(__file__)
+
+model = fastText.load_model( os.path.join( curr_dir , "model/embeddings.bin"))
 
 class Lang:
     def __init__(self, name):
@@ -48,7 +49,10 @@ def readLangs(lang1, lang2, reverse=False):
     print("Reading lines...")
 
     # Read the file and split into lines
-    lines = open('nmt/data/%s-%s.txt' % (lang1, lang2), encoding='utf-8').\
+    print(os.path.dirname(__file__))
+    dataFile = os.path.join( curr_dir , 'data/%s-%s.txt' % (lang1, lang2))
+
+    lines = open(dataFile, encoding='utf-8').\
         read().strip().split('\n')
 
     # Split every line into pairs and normalize
