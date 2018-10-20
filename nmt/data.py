@@ -110,5 +110,6 @@ def tensorFromSentence(lang, sentence, one_hot=False):
 
 def tensorsFromPair(pair, input_lang, output_lang):
     input_tensor = tensorFromSentence(input_lang, pair[0],False)
-    target_tensor = tensorFromSentence(output_lang, pair[1],True)
+    #FIXME AutoEncoder
+    target_tensor = tensorFromSentence(output_lang, pair[0],True)
     return (input_tensor, target_tensor)

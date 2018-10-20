@@ -77,7 +77,7 @@ def trainIters(encoder, decoder, pairs, input_lang, output_lang, n_iters, print_
     print_loss_total = 0  # Reset every print_every
     plot_loss_total = 0  # Reset every plot_every
 
-    paris = pairs[:1000]
+    pairs = pairs[:1000]
     encoder_optimizer = optim.SGD(encoder.parameters(), lr=learning_rate)
     decoder_optimizer = optim.SGD(decoder.parameters(), lr=learning_rate)
 

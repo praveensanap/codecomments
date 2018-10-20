@@ -5,7 +5,7 @@ import torch
 import matplotlib.pyplot as plt
 
 from nmt.data import prepareData
-from nmt.model import EncoderRNN, AttnDecoderRNN
+from nmt.model import EncoderRNN, AttnDecoderRNN, DecoderRNN
 from nmt.train import trainIters
 from nmt.evaluate import evaluateRandomly,evaluate,evaluateAndShowAttention
 
@@ -23,17 +23,18 @@ def run(model1, model2):
     #HYPERPARAMETERS
     hidden_size = 300
     dropout_p = 0.1
-    n_iters = 75000
+    n_iters = 20000
     print_every = 100
     teacher_forcing_ratio = 0
-    learning_rate = 0.01
+    learning_rate = 0.001
     #Prepare Data
-    input_lang, output_lang, pairs = prepareData('eng', 'fra')
+    input_lang, output_lang, pairs = prepareData('code', 'comment')
 
 
     # Define Model
     encoder1 = EncoderRNN(input_lang.n_words, hidden_size).to(device)
-    attn_decoder1 = AttnDecoderRNN(hidden_size, output_lang.n_words, dropout_p).to(device)
+    #FIXME Autoencoders
+    attn_decoder1 = AttnDecoderRNN(hidden_size, input_lang.n_words, dropout_p).to(device)
 
     #Train
     trainIters(
@@ -41,7 +42,7 @@ def run(model1, model2):
         decoder=attn_decoder1,
         pairs=pairs,
         input_lang = input_lang,
-        output_lang=output_lang,
+        output_lang=input_lang,#FIXME Autoencoder
         n_iters=n_iters,
         print_every=print_every,
         learning_rate=learning_rate,
@@ -58,7 +59,8 @@ def run(model1, model2):
          }, PATH)
 
     # Evaluate
-    evaluateRandomly(encoder1, attn_decoder1,input_lang, output_lang, pairs)
+    # FIXME Autoencoders
+    evaluateRandomly(encoder1, attn_decoder1,input_lang, input_lang, pairs)
     #
     # output_words, attentions = evaluate(encoder1, attn_decoder1, "je suis trop froid .",input_lang, output_lang,)
     #
