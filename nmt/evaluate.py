@@ -33,12 +33,12 @@ def evaluate(encoder, decoder, sentence,input_lang, output_lang, max_length=MAX_
         decoder_hidden = encoder_hidden
 
         decoded_words = []
-        decoder_attentions = torch.zeros(max_length, max_length)
+        #decoder_attentions = torch.zeros(max_length, max_length)
 
         for di in range(max_length):
             decoder_output, decoder_hidden, decoder_attention = decoder(
                 decoder_input, decoder_hidden, encoder_outputs)
-            decoder_attentions[di] = decoder_attention.data
+            #decoder_attentions[di] = decoder_attention.data
             topv, topi = decoder_output.data.topk(1)
             if topi.item() == EOS_token:
                 decoded_words.append('<EOS>')
@@ -50,14 +50,14 @@ def evaluate(encoder, decoder, sentence,input_lang, output_lang, max_length=MAX_
 
 
 
-        return decoded_words, decoder_attentions[:di + 1]
+        return decoded_words#, decoder_attentions[:di + 1]
 
 def evaluateRandomly(encoder, decoder,input_lang, output_lang,pairs, n=10):
     for i in range(n):
         pair = random.choice(pairs)
         print('>', pair[0])
         print('=', pair[1])
-        output_words, attentions = evaluate(encoder, decoder, pair[0], input_lang, output_lang)
+        output_words = evaluate(encoder, decoder, pair[0], input_lang, output_lang)
         output_sentence = ' '.join(output_words)
         print('<', output_sentence)
         print('')

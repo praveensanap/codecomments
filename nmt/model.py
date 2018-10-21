@@ -42,6 +42,44 @@ class DecoderRNN(nn.Module):
     def initHidden(self):
         return torch.zeros(1, 1, self.hidden_size, device=device)
 
+class SaneAttnDecoderRNN(nn.Module):
+    def __init__(self, hidden_size, output_size, max_length=MAX_LENGTH):
+        super(SaneAttnDecoderRNN, self).__init__()
+        self.hidden_size = hidden_size
+        self.output_size = output_size
+        self.max_length = max_length
+
+        self.embedding = nn.Embedding(self.output_size, self.hidden_size)
+        self.gru = nn.GRU(self.hidden_size, self.hidden_size)
+        self.attn_combine = nn.Linear(self.hidden_size * 2, self.hidden_size)
+        self.out = nn.Linear(self.hidden_size, self.output_size)
+
+
+    def forward(self, input, hidden, context):
+        embedded = self.embedding(input).view(1, 1, -1)
+
+        context = context.view(1, -1, self.hidden_size) # (MAX_LENGTH * hidden_size) -> (1 * MAX_LENGTH * hidden_size)
+
+        # Attention score for each context vector
+        attn_score = torch.bmm( context, hidden.transpose(1, 2)) #(1 * MAX_LENGTH * hidden_size)
+
+        # Softmax distribution of Attention Scores
+        attn_dist = F.softmax(attn_score, dim=1)
+
+        # Weighted sum of context vectors with attention distribution
+        attn_output= torch.bmm(attn_dist.transpose(1,2) , context)  # (1 * 1 * hidden_size)
+
+        # Concat Attention with input project on H
+        attn_combined = self.attn_combine(torch.cat((embedded[0], attn_output[0]), 1)).unsqueeze(0)
+
+        output = F.softmax(attn_combined , dim=1)
+
+        output , hidden = self.gru(output, hidden)
+
+        output = F.log_softmax(self.out(output[0]), dim=1)
+
+        return output, hidden, attn_dist
+
 class AttnDecoderRNN(nn.Module):
     def __init__(self, hidden_size, output_size, dropout_p=0.1, max_length=MAX_LENGTH):
         super(AttnDecoderRNN, self).__init__()
@@ -62,7 +100,9 @@ class AttnDecoderRNN(nn.Module):
         embedded = self.dropout(embedded)
 
         attn_weights = F.softmax(
-            self.attn(torch.cat((embedded[0], hidden[0]), 1)), dim=1)
+            self.attn(
+                torch.cat((embedded[0], hidden[0]), 1)
+            ), dim=1)
         attn_applied = torch.bmm(attn_weights.unsqueeze(0),
                                  encoder_outputs.unsqueeze(0))
 
