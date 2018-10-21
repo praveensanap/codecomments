@@ -23,7 +23,7 @@ def run(model1, model2):
     #HYPERPARAMETERS
     hidden_size = 300
     dropout_p = 0.1
-    n_iters = 2000
+    n_iters = 20000
     print_every = 100
     teacher_forcing_ratio = 0
     learning_rate = 0.001
